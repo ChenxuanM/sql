@@ -56,6 +56,38 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 ```
 Your answer...
 ```
+The store wants to keep customer addresses. I propose two architectures for the CUSTOMER_ADDRESS table:
+Type 1 is overwrite architecture 
+In this type, customer address information will be stored directly in the CUSTOMER table, or in a separate table called CUSTOMER_ADDRESS with one-on-one relationship
+- customer_id (FK, PK)
+- street_address
+- city
+- province
+- postal_code
+if the customer change their address, we will simply UPDATE the information, but the historical record will be lost
+
+Type 2 is Retain historical Record
+In this case, there will be a separate table for CUSTOMER_ADDRESS that maintains all address changes:
+- address_id (PK, auto-increment)
+- customer_id (FK)
+- street_address
+- city
+- province
+- postal_code
+- effective_date (when this address became active)
+- end_date (NULL for current address)
+- is_current (boolean flag, TRUE for current address)
+if the customer change their address, we INSERT a new record and UPDATE the previous record's end_date and is_current flag, 
+this type will have all historical records.
+
+- The overwrite architecture is **Type 1 SCD** (Slowly Changing Dimension)
+- The historical tracking architecture is **Type 2 SCD**
+
+Note: In my ERD, the ORDER table serves as the sales transaction table, containing all necessary sales information including line_total for revenue tracking. The SHIFT table successfully implements employee scheduling with morning/evening shift types as required.
+
+
+
+
 
 ***
 
@@ -185,3 +217,13 @@ Consider, for example, concepts of labour, bias, LLM proliferation, moderating c
 ```
 Your thoughts...
 ```
+In the previous assignment, I reflected on the issue of bias from those in power. As I move forward, I'd like to consider how bias and objectivity can be addressed in my own project.
+
+My project includes an AI assistant, and I now realize that I'm already introducing bias when pre-setting this assistant. The decisions and choices I make as a human are intrinsically linked to my past experiences, which continuously build on my existing knowledge. Consequently, every decision made by a "person" carries their personal imprint.
+
+For example, my Ph.D project is to design a system to help teachers design curriculum. I tend to assume that "visualization" is superior to "text." This is a bias stemming from my undergraduate and graduate studies in architecture, which were filled with visual representations. It is true that such bias has both advantages and disadvantages. The advantage is that I can consistently move forward in a particular direction, while the disadvantage is that I lose sight of diversity and other possibilities.
+
+So, if the goal of my doctoral project is to help teachers and pre-service teachers with curriculum design, how can I minimize these preconceptions and biases? Last time I was thinking critical thinking and empathy are important, now I have some additional thoughts.
+First, I think before making any assumptions, I should understand my target users as thoroughly as possible, maintain continuous follow-up with them, and have them validate our designs. For example, when I start collecting information for my user, I still can have a pre-set table, but I need to revise the table after talking with them, and if I can interview them again to have some verifications, that will be more helpful. 
+
+This is where building a knowledge community seems better than working alone. At the same time, we must acknowledge that even knowledge communities with broad participation still contain biases. The next step is still to remind ourselves to critically review the designs and results at every stage, to acknowledge biases, and to continue moving forward.
